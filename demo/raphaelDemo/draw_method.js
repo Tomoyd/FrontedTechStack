@@ -5,14 +5,14 @@ let attr = {
     "stroke-linejoin": "round"
 };
 function drawPath(R){
-    let url="./path.json"
-    let request =new XMLHttpRequest()
-    request.open("get",url)
-    request.send(null)
-    request.onload=(res)=>{
-    }
+    // let url="./path.json"
+    // let request =new XMLHttpRequest()
+    // request.open("get",url)
+    // request.send(null)
+    // request.onload=(res)=>{
+    // }
     return {
         name:"河南",
-        path:R.path(HUAI_YANG).attr(attr)
+        path:R.path(HE_NAN).attr(attr)
     }
 }

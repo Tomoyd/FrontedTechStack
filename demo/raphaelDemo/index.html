@@ -16,7 +16,9 @@
     window.onload=()=>{
         let mapContainer=document.getElementById("mapContainer")
         let r=Raphael("mapContainer",mapContainer.clientWidth,mapContainer.clientHeight)
+
         let {name,path}=drawPath(r)
+
         let text=null
         path.color=Raphael.getColor(0.9);
         let centerX=path.getBBox().x+(path.getBBox().width/2)
@@ -25,12 +27,13 @@
         let translateY=(mapContainer.clientHeight/2-centerY)
         text=r.text(centerX,centerY,name).attr({fill:"#000",fontSize:"30px",cursor:"pointer"})
         text.node.onclick=(e)=>{
-            window.location.href="https://map.baidu.com/search?querytype=s&da_src=shareurl&wd=河南"
+            window.location.href="https://map.baidu.com/search?querytype=s&da_src=shareurl&wd="+name
         }
         path.translate(translateX,translateY)
+        path.scale(0.5,0.5)
         text.translate(translateX,translateY)
         path[0].onmouseover=()=>{
-            path.animate({fill:path.color,stroke:'#FFFF00'},500)
+            path.animate({fill:path.color,stroke:'#eee'},500)
             text.toFront()
             r.safari()
         }

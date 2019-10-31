@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<div id="mapContainer" style="width:100%;height:100vh;box-sizing: border-box;margin: 0;padding: 0"></div>
+<div id="mapContainer"  class="map-container"></div>
 <noscript>不支持JavaScript</noscript>
 <link rel="stylesheet" type="text/css" href="common.css">
 <script src="./raphael.js"></script>
@@ -15,33 +15,30 @@
 <script type="text/javascript">
     window.onload=()=>{
         let mapContainer=document.getElementById("mapContainer")
-        let r=Raphael("mapContainer",mapContainer.clientWidth,mapContainer.clientHeight)
+        let {clientWidth,clientHeight}=mapContainer
+        let r=Raphael("mapContainer",clientWidth,clientHeight)
+        let translateX=0
+        let translateY=0
+        if(PROVINCE_PATH.length>0){
+            let path=drawPath(r,PROVINCE_PATH[0])
+            let centerX=path.getBBox().x+(path.getBBox().width/2)
+            let centerY=path.getBBox().y+(path.getBBox().height/2)
 
-        let {name,path}=drawPath(r)
+            path.color=Raphael.getColor(0.8);
+            translateX=clientWidth/2-centerX
+            translateY=clientHeight/2-centerY
+            let text=addTextAndEvent(path,PROVINCE_PATH[0].name,r,PROVINCE_PATH[0].color)
+            text.translate(translateX,translateY)
+            path.translate(translateX,translateY)
+        }
+        PROVINCE_PATH.slice(1).forEach(pathInfo=>{
+            let path=drawPath(r,pathInfo)
+            let text=addTextAndEvent(path,pathInfo.name,r,pathInfo.color)
+            text.translate(translateX,translateY)
+            path.translate(translateX,translateY)
 
-        let text=null
-        path.color=Raphael.getColor(0.9);
-        let centerX=path.getBBox().x+(path.getBBox().width/2)
-        let centerY=path.getBBox().y+(path.getBBox().height/2)
-        let translateX=(mapContainer.clientWidth/2-centerX)
-        let translateY=(mapContainer.clientHeight/2-centerY)
-        text=r.text(centerX,centerY,name).attr({fill:"#000",fontSize:"30px",cursor:"pointer"})
-        text.node.onclick=(e)=>{
-            window.location.href="https://map.baidu.com/search?querytype=s&da_src=shareurl&wd="+name
-        }
-        path.translate(translateX,translateY)
-        path.scale(0.5,0.5)
-        text.translate(translateX,translateY)
-        path[0].onmouseover=()=>{
-            path.animate({fill:path.color,stroke:'#eee'},500)
-            text.toFront()
-            r.safari()
-        }
-        path[0].onmouseout=()=>{
-            path.animate({fill:"#97d6f5",stroke:'#eee'},500)
-            text.toFront()
-            r.safari()
-        }
+        })
+
     }
 </script>
 </body>

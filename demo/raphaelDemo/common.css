@@ -1,5 +1,13 @@
-html,body{
-    margin:0;
-    padding:0;
-    width:auto;
+html, body {
+    margin: 0;
+    padding: 0;
+    width: auto;
+}
+
+.map-container {
+    width: 280px;
+    height: 400px;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0
 }

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>border</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body{
+            font-size: 0;
+        }
+        div{
+            font-size:16px;
+        }
+        .item1{
+            width:100px;
+            height:100px;
+            border-width:5px;
+            border-style:solid;
+            border-color: #FF0 #0FF #0F0 #F00;
+        }
+        .item2{
+            width:0;
+            height:0;
+            border-width: 50px;
+            border-style: solid;
+            border-color:#FF0 #0FF #0F0 #F00;
+        }
+        .item3{
+            margin-top:10px;
+            width:0;
+            height:0;
+            border-top-width: 50px;
+            border-left-width: 0;
+            border-right-width: 50px;
+            border-bottom-width:0;
+            border-style: solid;
+            border-color:#FF0 #0FF #0F0 #F00;
+        }
+
+        .city {
+            box-sizing: border-box;
+            margin:10px 0;
+            display: inline-block;
+            padding: 5px 20px;
+            border: 1px solid #44a5fc;
+
+            color: #333;
+            transform: skew(-20deg);
+        }
+        .city~.city{
+            border-left:none ;
+        }
+        .city:focus{
+            background-color:#44a5fc
+        }
+        .city:hover{
+            cursor: pointer;
+            background-color:#44a5fc
+        }
+
+        .city div {
+
+            margin:0;
+            padding:0;
+            transform: skew(20deg);
+        }
+    </style>
+</head>
+<body>
+<div class="item1"></div>
+<div class="item2"></div>
+<div class="item3"></div>
+<div class="city" tabindex="1">
+    <div>上海</div>
+</div>
+<div class="city" tabindex="1">
+    <div>上海</div>
+</div>
+<div class="city" tabindex="1">
+    <div>上海</div>
+</div>
+<div class="city" tabindex="1">
+    <div>上海</div>
+</div>
+</body>
+</html>

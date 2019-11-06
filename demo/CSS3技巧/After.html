@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>::after</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .after-class{
+            width:50px;
+            height:50px;
+            border-radius: 50%;
+            border: 5px solid #3d3d3d;
+            position: relative;
+        }
+        .after-class::after{
+            content:'';
+            display: block;
+            width:8px;
+            height:60px;
+            border-radius: 5px;
+            background: #3d3d3d;
+            position:absolute;
+            right:-22px;
+            top:38px;
+            transform: rotate(-45deg);
+        }
+        .attr-div{
+            position:relative;
+        }
+        .attr-div:hover::after{
+            content:attr(data-title);
+            display: inline-block;
+            padding: 10px 14px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            position:absolute;
+            top:50px;
+            left:30px;
+        }
+    </style>
+</head>
+<body>
+<div class="after-class">
+</div>
+<div class="attr-div" data-title="hello-search">
+    hello
+</div>
+</body>
+</html>

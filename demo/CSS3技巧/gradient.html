@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>gradient</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .line-gradient{
+            width:200px;
+            height:50px;
+            background:linear-gradient(to right top,#FFAF0F,#FFAF1F,yellow);
+        }
+        .line-gradient2{
+            margin-top:20px;
+            width:200px;
+            height:100px;
+            background:linear-gradient(#FFAF0F 33%,#FFFF00 50%) ;
+            /*background-size:100% 20px ;*/
+        }
+        .repeating-line-gradient{
+            margin-top:20px;
+            width:200px;
+            height:100px;
+            background:repeating-linear-gradient(45deg,#f90,#f90 25px,#c0c 0px,#c9c 30px);
+        }
+        .chrome{
+            margin-top:10px;
+            width:180px;
+            height:180px;
+            border-radius:50%;
+            box-shadow: 0 0 4px #999,0 0 0 2px #ddd inset;
+            background: radial-gradient(circle, #4FACF5 0, #2196F3 28%, transparent 28%),
+                    radial-gradient(circle, #fff 33%, transparent 33%),
+                    linear-gradient(-50deg, #FFEB3B 34%, transparent 34%),
+            linear-gradient(60deg, #4CAF50 33%, transparent 33%),
+            linear-gradient(180deg, #FF756B 0, #F44336 30%, transparent 30%),
+            linear-gradient(-120deg, #FFEB3B 40%, transparent 40%),
+            linear-gradient(-60deg, #FFEB3B 30%, transparent 30%),
+            linear-gradient(0deg, #4CAF50 45%, transparent 45%),
+            linear-gradient(60deg, #4CAF50 30%, transparent 30%),
+            linear-gradient(120deg, #F44336 50%, transparent 50%),
+            linear-gradient(180deg, #F44336 30%, transparent 30%);
+        }
+
+    </style>
+</head>
+<body>
+<div class="line-gradient"></div>
+<div class="line-gradient2"></div>
+<div class="repeating-line-gradient"></div>
+<div class="chrome"></div>
+</body>
+</html>

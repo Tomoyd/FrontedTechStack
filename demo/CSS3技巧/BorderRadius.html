@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>圆角</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        div[class*="circle"]{
+            background-color: red;
+            display: inline-block;
+        }
+        .circle{
+            width:50px;
+            height:50px;
+            border-radius: 50%;
+        }
+        .semi-circle{
+            width:100px;
+            height:50px;
+            border-radius: 50px 50px 0 0;  // 左上 右上 右下 左下
+        }
+        .elliptical-circle{
+            width:100px;
+            height: 50px;
+            border-radius: 50px/25px; // x/y
+        }
+        .semi-elliptical-circle{
+            width:100px;
+            height: 50px;
+            border-radius:100% 0 0 100%/50% 50% 50% 50%; // 水平半径 垂直半径
+        }
+    </style>
+</head>
+<body>
+<div class="circle"></div>
+<div class="semi-circle"></div>
+<div class="elliptical-circle"></div>
+<div class="semi-elliptical-circle"></div>
+</body>
+</html>

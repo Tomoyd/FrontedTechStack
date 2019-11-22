@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+
+
+        .nav {
+            width: 70%;
+            height: 80px;
+            margin: 0 auto;
+            background: pink;
+            position: fixed;
+            top: 0;
+            z-index: 99;
+        }
+
+        .index {
+            width: 100%;
+            background: lightseagreen;
+            height: 900px;
+        }
+
+        .concent{
+            width: 100%;
+            background: red;
+            height: 900px;
+        }
+
+        .about-us {
+            width: 100%;
+            background: yellow;
+            height: 900px;
+        }
+
+    </style>
+
+</head>
+<body>
+<!-- 固定导航栏 -->
+<div class="nav">
+    <a href="#index" class="font-title font-active">首页</a>
+    <a href="#concent" class="font-title">内容</a>
+    <a href="#about-us" class="font-title">关于我们</a>
+</div>
+
+<div class="empty" style="height: 80px;width: 100%"></div>
+<div class="main-description">
+
+    <!-- 设置暗锚点 -->
+    <a name="index" style=" position: relative;top: -80px;display: block;height: 0;overflow: hidden;"></a>
+    <!-- 真实锚点显示地方 -->
+    <div class="index">首页</div>
+
+    <a name="concent" style=" position: relative;top: -80px;display: block;height: 0;overflow: hidden;"></a>
+    <div class="concent">内容</div>
+
+    <a name="about-us" style=" position: relative;top: -80px;display: block;height: 0;overflow: hidden;"></a>
+    <div class="about-us"><span>关于我们</span></div>
+
+    <div class="empty" style="height: 80px;width: 100%"></div>
+</div>
+
+
+</body>
+</html>

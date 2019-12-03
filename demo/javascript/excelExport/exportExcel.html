@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>exportExcel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../bootstrap/bootstrap.min.css"/>
+</head>
+<body>
+<div>
+    <button class="btn-sm btn-success" onclick="exportX()">导出</button>
+    <table id="tableContent">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>名字</th>
+            <th>性别</th>
+            <th>爱好</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>Alice</td>
+            <td>女</td>
+            <td>看电影</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Zacks</td>
+            <td>男</td>
+            <td>看书</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script src="XLSExport.js"></script>
+<script>
+    function exportX() {
+        new XLSExport('tableContent','tableXls')
+    }
+    function exportXls(id,filename){
+        let content=document.getElementById(id).innerHTML
+        let uri='data:application/vnd.ms-excel;base64,',
+            template='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta name="renderer" content="webkit"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>';
+        let ctx={worksheet:"Worksheet",table:content};
+        let aDom=document.createElement("a");
+        document.body.appendChild(aDom);
+        aDom.hreflang="zh";
+        aDom.charset='utf8';
+        aDom.type="application/vnd.ms-excel"
+        let blob= new Blob([(format(template,ctx))])
+        aDom.href=URL.createObjectURL(blob)
+        // aDom.target = '_blank';
+        aDom.download = filename + '.xls';
+        aDom.tableBorder = 1;
+        aDom.click();
+        document.body.removeChild(aDom)
+    }
+
+    function format(s, c) {
+        return s.replace(/{(\w+)}/g,
+            function(m, p) {
+                console.log(m,p)
+                return c[p];
+            }
+        )
+    }
+
+</script>
+</body>
+</html>

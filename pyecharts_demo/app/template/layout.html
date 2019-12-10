@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+     {% block CSS %}{% endblock %}
+    <title> {% block title %}{% endblock %}</title>
+    <link href="../static/images/robosense.ico" rel="shortcut icon">
+    <link rel="stylesheet" href="../static/dependencies/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/common.css">
+    <script src="../static/dependencies/three.min.js"></script>
+    <script src="../static/dependencies/OrbitControls.js"></script>
+    <script src="../static/dependencies/axios.min.js"></script>
+</head>
+<body>
+{% block content %} {% endblock %}
+{% block js %} {% endblock%}
+</body>
+</html>

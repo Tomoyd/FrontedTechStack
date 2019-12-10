@@ -1,0 +1,17 @@
+html, body {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+* {
+    box-sizing: border-box;
+}
+.button-func{
+    margin:0 5px;
+}
+.load-point:hover{
+    cursor:pointer;
+}

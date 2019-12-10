@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jinja Demo</title>
+    <link rel="stylesheet" href="./bootstrap.min.css">
+    <script src="three.min.js"></script>
+    <script src="OrbitControls.js"></script>
+    <script src="test_js.js"></script>
+    <style>
+        html,body{
+            padding:0;
+            margin:0;
+            box-sizing: border-box;
+            max-width: 100%;
+            overflow: hidden;
+        }
+        *{
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+<div style="position:absolute;z-index: 10">
+    <h1>{{name}}</h1>
+    <button onclick="say('{{name}}')" class="bg-primary">点击</button>
+</div>
+
+</body>
+</html>

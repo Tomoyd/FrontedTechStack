@@ -1,7 +1,8 @@
 let scene, camera, renderer,
     plane, renderDomRay,
-    currentArr = [], rois = [], currentROI, cloudPoint,
-    ringMaterial, spinner,tempSelect
+    currentArr = [], rois = [],pcdNames=[],selectValue="无",selectionIndex=0,currentROI, cloudPoint,cubeID=-1,font=null,
+    ringMaterial, spinner,tempSelect,isDbl=false,timeOuter=null,fileDir="",
+    fontMeshList=[]
 function init() {
     scene = new THREE.Scene();
     camera = new THREE.OrthographicCamera(window.innerWidth / -15, window.innerWidth / 15, window.innerHeight / 15,         window.innerHeight / -15, 1, 1000);
@@ -26,12 +27,37 @@ function init() {
 
 }
 const commonMaterialInit=()=>{
-    ringMaterial=new THREE.LineBasicMaterial({color:0xFF0000})
+    ringMaterial=new THREE.PointsMaterial({
+        size: 5,
+        opacity:1,
+        vertexColors: true,
+        sizeAttenuation: false,
+        color: 0xFFFFFF,
+    })
+    let loader = new THREE.FontLoader()
+                loader.load("/static/fonts/gentilis_bold.typeface.json", (fontMesh) => {
+                      font = fontMesh
+                  loader = null
+                })
+}
+
+const addFontToCube=(cube)=> {
+                let mesh = new THREE.Mesh(new THREE.ShapeBufferGeometry(font.generateShapes(String(cube.cubeID), 2)),
+                new THREE.MeshBasicMaterial({
+                    color: 0xFF0000,
+                  }))
+    cube.geometry.computeBoundingSphere()
+            let {x,y,z}=cube.geometry.boundingSphere.center
+    mesh.cubeID=cube.cubeID
+            mesh.position.set(x,y,2)
+    fontMeshList.push(mesh)
+               scene.add(mesh)
 }
 const createRing=(x,y,z)=>{
-    let ring=new THREE.Line(new THREE.RingBufferGeometry(0.1,0.4,128),ringMaterial)
-    ring.position.set(x,y,z)
-    return ring
+    let geo=new THREE.Geometry(0.1,0.4,128)
+    geo.vertices=[new THREE.Vector3(x,y,z)]
+    geo.colors=[new THREE.Color(1,0,0)]
+    return new THREE.Points(geo,ringMaterial)
 
 }
 const controlInit = (camera, renderer) => {
@@ -55,25 +81,38 @@ const addNoOption=(selectionDom)=>{
     option.innerText="无"
     selectionDom.appendChild(option)
 }
+
 const clearROI=(e)=>{
-    rois.forEach(item=>{
-        scene.remove(item)
-        item.geometry.dispose()
-        item.material.dispose()
+    clearScene(false)
+     spinner.style.display="block"
+    let param=new FormData()
+    param.append("fileDir",fileDir)
+    param.append("filename",selectValue)
+    param.append("value","deleteAll")
+    axios.post("/api/roi/delete",param,{headers: {'Content-Type': 'multipart/form-data;charset=utf-8'}}).then(res=>{
+       spinner.style.display="none"
+    }).catch(e=>{
+        spinner.style.display="none"
     })
-    scene.remove(currentROI)
-    currentROI=null
-    rois = []
 }
-const clearScene=()=>{
+const clearScene=(clearPoint)=>{
+    rois.forEach(item=>{
+        disposeObject(item)
+    })
+    fontMeshList.forEach(item=>{
+       disposeObject(item)
+    })
+    cubeID=-1
+    rois = []
+    fontMeshList=[]
     disposeObject(currentROI)
-    disposeObject(cloudPoint)
-    clearROI()
-    scene.remove()
-    currentArr = [];
-    rois = [];
-    currentROI=null;
-    cloudPoint=null
+    if(clearPoint){
+        disposeObject(cloudPoint)
+        cloudPoint=null
+    }
+
+    currentROI=null
+
 }
 const createParticles = (pointData) => {
     let geom = new THREE.Geometry();
@@ -92,6 +131,27 @@ const createParticles = (pointData) => {
         geom.colors.push(color.clone());
     })
     return new THREE.Points(geom, material);
+}
+const createRois=(roiList)=>{
+    roiList.forEach(item=>{
+        currentArr=[]
+        currentROI=null
+        if(item.points.length>0){
+            currentArr=item.points.map(point=>{
+                return new THREE.Vector2(point[0],point[1])
+            })
+           shapeFun()
+        }
+        if(currentROI){
+            currentROI.childList=currentArr
+            currentROI.finished=true
+            currentROI.cubeID=item.value
+            currentROI.material.color.set(0xd5d5d5)
+            addFontToCube(currentROI)
+        }
+        currentArr=[]
+        currentROI=null
+    })
 }
 const disposeObject=(obj)=>{
     if(obj){
@@ -112,7 +172,7 @@ const getYamlInfo=()=>{
     let info={
         png_range:{},
         png_size:{},
-        roi_range:{xmax:0,ymax:0,xmin:0,ymin:0},
+        roi_range:{xmax:-10000,ymax:-10000,xmin:10000,ymin:10000},
         polygen:[],
         pcdName:selection.value.replace(".pcd","")
     }
@@ -123,8 +183,20 @@ const getYamlInfo=()=>{
     info.roi_value=currentROI.cubeID
     info.png_size.rows=document.documentElement.clientWidth
     info.png_size.cols=document.documentElement.clientHeight
-    currentROI.children.forEach(item=>{
-        let {x,y}=item.position
+    if(currentROI.children.length>0){
+        currentROI.children.forEach(item=>{
+        let {x,y}=item.geometry.vertices[0]
+        x=toFix5(x)
+        y=toFix5(y)
+        info.roi_range.xmax=info.roi_range.xmax<x?x:info.roi_range.xmax
+        info.roi_range.ymax=info.roi_range.ymax<y?y:info.roi_range.ymax
+        info.roi_range.xmin=info.roi_range.xmin>x?x:info.roi_range.xmin
+        info.roi_range.ymin=info.roi_range.ymin>y?y:info.roi_range.ymin
+        info.polygen.push([x,y])
+        })
+    }else{
+        currentROI.childList&&currentROI.childList.forEach(item=>{
+        let {x,y}=item
         x=toFix5(x)
         y=toFix5(y)
         info.roi_range.xmax=info.roi_range.xmax<x?x:info.roi_range.xmax
@@ -133,6 +205,9 @@ const getYamlInfo=()=>{
         info.roi_range.ymin=info.roi_range.ymin>y?y:info.roi_range.ymin
         info.polygen.push([x,y])
     })
+    }
+
+
     return info
 }
 const otherHidden=()=>{
@@ -140,6 +215,9 @@ const otherHidden=()=>{
     rois.forEach(item=>{
         item.visible=false
     })
+   fontMeshList.forEach(item=>{
+       item.visible=false
+   })
     if(currentROI){
          currentROI.children.forEach(item=>{
             item.visible=false
@@ -152,27 +230,49 @@ const otherShow=()=>{
     rois.forEach(item=>{
         item.visible=true
     })
-    currentROI.children.forEach(item=>{
-        item.visible=true
-    })
+    fontMeshList.forEach(item=>{
+       item.visible=true
+   })
+    if(currentROI.children.length>0){
+        currentROI.children.forEach(item=>{
+            item.visible=true
+        })
+    }
 }
 const selectedCurrent=()=>{
     if(currentROI){
-        currentArr=[]
-        currentROI.material.opacity=0.5
+         currentArr=[]
+        if(!currentROI.finished&&currentROI.children.length<3){
+            scene.remove(currentROI)
+            currentROI.material.dispose()
+            currentROI.geometry.dispose()
+            currentROI=null
+        }else{
+          currentROI.material.opacity=0.5
         currentROI.material.color.set(0x00FF00)
+            if(!currentROI.finished){
+              addFontToCube(currentROI)
+            }
+
         currentROI.finished=true
+        }
     }
 }
 const drawShape = () => {
     if(currentROI){
         currentROI.material.color.set(0xd5d5d5)
+        if(currentROI.children.length>0){
+        currentROI.children.forEach(item=>{
+            item.visible=false
+        })
+    }
     }
     let shape = new THREE.Shape(currentArr)
     let geometry = new THREE.ShapeBufferGeometry(shape);
     let material = new THREE.MeshBasicMaterial({color: 0xff0000,opacity: 0.5,transparent:true});
     currentROI = new THREE.Mesh(geometry, material);
-    currentROI.cubeID=rois.length
+    cubeID+=1
+    currentROI.cubeID=cubeID
     rois.push(currentROI)
     currentROI.position.z = 1
     scene.add(currentROI);
@@ -190,13 +290,13 @@ const shapeFun = () => {
 }
 
 const loadPoint = () => {
-     clearScene()
+     clearScene(true)
     let selectionDom=document.getElementById("selection")
     while (selectionDom.children.length>0){
             selectionDom.removeChild(selectionDom.children.item(0))
      }
     let input = document.getElementById("filepath")
-    let fileDir = input.value
+    fileDir = input.value
     if(fileDir.trim()===""){
         let selection=document.getElementById("selection")
         addNoOption(selection)
@@ -211,15 +311,19 @@ const loadPoint = () => {
         }
     }).then(res => {
         spinner.style.display="none"
+        pcdNames=[]
         if (res.data.code === 200) {
-            let pcdNames=res.data.pcdNames
+            pcdNames=res.data.pcdNames
             if(pcdNames.length>0){
+                selectValue=pcdNames[0]
                 pcdNames.forEach(item=>{
                     let option=document.createElement("option")
                     option.innerText=item
                     selectionDom.appendChild(option)
                 })
                 cloudPoint = createParticles(res.data.points)
+                createRois(res.data.rois)
+                cubeID=res.data.maxValue
                 scene.add(cloudPoint)
             }else{
                 alert("无数据")
@@ -236,9 +340,11 @@ const loadPoint = () => {
     })
 }
 const fileChange=(value)=>{
-    clearScene()
-    let input = document.getElementById("filepath")
-    let fileDir = input.value
+    selectionIndex=pcdNames.findIndex(item=>{
+        return item===value
+    })
+    selectValue=value
+    clearScene(true)
     spinner.style.display="block"
     axios.get("/api/points/data",
         {
@@ -251,6 +357,8 @@ const fileChange=(value)=>{
             spinner.style.display="none"
             if(res.data.code===200){
                 cloudPoint = createParticles(res.data.points)
+                createRois(res.data.rois)
+                cubeID=res.data.maxValue
                 scene.add(cloudPoint)
             }else{
                 alert("无数据")
@@ -260,12 +368,41 @@ const fileChange=(value)=>{
         spinner.style.display="none"
     })
 }
+const previous=()=>{
+    if(pcdNames.length===0){
+        alert("无数据")
+        return false
+    }
+   if(selectionIndex-1>=0){
+        selectionIndex--;
+        let selection=document.getElementById("selection")
+        selection.value=pcdNames[selectionIndex]
+       fileChange(pcdNames[selectionIndex])
+    }else{
+       alert("已是第一帧")
+    }
+}
+const next=()=>{
+     if(pcdNames.length===0){
+        alert("无数据")
+        return false
+    }
+    if(pcdNames.length>(selectionIndex+1)){
+        selectionIndex++;
+        let selection=document.getElementById("selection")
+        selection.value=pcdNames[selectionIndex]
+        fileChange(pcdNames[selectionIndex])
+    }else{
+       alert("已是最后一帧")
+    }
+
+}
 const exportURL = () => {
     let info=getYamlInfo()
     spinner.style.display="block"
      if(currentROI){
-            currentROI.material.color.set(0xffffff)
-            currentROI.material.opacity=1
+        currentROI.material.color.set(0xffffff)
+        currentROI.material.opacity=1
      }
     setTimeout(() => {
         let img = renderer.domElement.getContext("experimental-webgl", {preserveDrawingBuffer: true});
@@ -307,8 +444,6 @@ const getIntersect=(x,y)=>{
 }
 
 const exportShape = () => {
-     let input = document.getElementById("filepath")
-    let fileDir = input.value
     if(fileDir.trim()===""){
         alert("请输入路径")
         return false
@@ -327,17 +462,36 @@ const keydownFunc=(e)=>{
     switch (e.which) {
         case 46:
             scene.remove(currentROI)
+            currentArr=[]
             if(currentROI){
+                spinner.style.display="block"
                 let index=rois.findIndex(item=>{
                     return item.cubeID===currentROI.cubeID
                 })
                 if(index>-1){
                     rois.splice(index,1)
-                    rois.forEach((item,index)=>{
-                        item.cubeID=index
-                    })
                 }
+             index=fontMeshList.findIndex(item=> {
+                 return item.cubeID === currentROI.cubeID
+             })
+
+                if(index>-1){
+                    scene.remove(fontMeshList[index])
+                    fontMeshList[index].material.dispose()
+                    fontMeshList[index].geometry.dispose()
+                    fontMeshList.splice(index,1)
+                }
+                cubeID=cubeID>currentROI.cubeID?cubeID:currentROI.cubeID-1
+                let param=new FormData()
+                param.append("fileDir",fileDir)
+                param.append("filename",selectValue)
+                param.append("value",currentROI.cubeID)
                 currentROI.geometry.dispose()&&currentROI.material.dispose()
+                axios.post("/api/roi/delete",param,{headers: {'Content-Type': 'multipart/form-data;charset=utf-8'}}).then(res=>{
+                    spinner.style.display="none"
+                }).catch(e=>{
+                    spinner.style.display="none"
+                })
             }
             currentROI=null
             break;
@@ -380,46 +534,73 @@ const moveEvent = (e) => {
         return [0, 0]
     }
 }
+const clickShape=(e)=>{
+    let [x, y] = moveEvent(e)
+    let vet2=new THREE.Vector2(x, y)
+    let ringMatch=currentArr.find(item=>{
+        return vet2.distanceTo(item)<=1
+    })
+    if(ringMatch){
+        currentArr=[]
+        selectedCurrent()
+    }else{
+        currentArr.push(vet2)
+        shapeFun()
+        currentROI.attach(createRing(x, y,1))
+    }
+}
 const mousedownEvent = (e) => {
     if(!cloudPoint){
         return false
     }
     if (e.ctrlKey) {
     } else {
-        if(document.activeElement.tagName!=="BODY"){
-            document.activeElement.blur()
+        clearTimeout(timeOuter)
+        if(isDbl){
+            isDbl=false
+          return false
         }
-        if(tempSelect&&tempSelect.finished){
-            return false
-        }
-        let [x, y] = moveEvent(e)
-        let vet2=new THREE.Vector2(x, y)
-        let ringMatch=currentArr.find(item=>{
-            return vet2.distanceTo(item)<=0.8
-        })
-        if(ringMatch){
-            currentArr=[]
-            selectedCurrent()
-        }else{
-            currentArr.push(vet2)
-            shapeFun()
-            currentROI.attach(createRing(x, y,1))
-        }
+        timeOuter=setTimeout(()=>{
+                if(document.activeElement.tagName!=="BODY"){
+                document.activeElement.blur()
+            }
+                if(tempSelect&&tempSelect.finished){
+                    return false
+                }
+                clickShape(e)
+                clearTimeout(timeOuter)
+            },200)
+
+
     }
 }
 const dblClickEvent=(e)=>{
     e.preventDefault()
+    isDbl=true
+    clearTimeout(timeOuter)
     currentROI&&(currentROI.material.color.set(0xd5d5d5))
     if(tempSelect){
         tempSelect.material.color.set(0x00ff00)
         currentROI=tempSelect
         currentArr=[]
+    }else if(currentROI&&!currentROI.finished&&currentArr.length>=2){
+        clickShape(e)
+        selectedCurrent();
+  }
+ if(currentArr.length<=2){
+       selectedCurrent();
     }
+  let timerD=setTimeout(()=>{
+      isDbl=false
+      clearTimeout(timerD)
+  },200)
+
 }
 
 window.onload = () => {
     init()
     commonMaterialInit()
+
     renderer.domElement.addEventListener("mousemove", moveEvent, false)
     renderer.domElement.addEventListener("click", mousedownEvent, false)
     renderer.domElement.addEventListener("dblclick", dblClickEvent, false)
@@ -434,6 +615,7 @@ window.onload = () => {
             camera.updateProjectionMatrix()
         }
     }
+
     spinner=document.getElementById("spinner")
 }
 window.onunload = () => {

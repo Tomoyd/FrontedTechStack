@@ -1,0 +1,21 @@
+png_range:
+  xmax: 106.02871
+  xmin: -106.02871
+  ymax: 56.2438
+  ymin: -56.2438
+png_size:
+  cols: 984
+  rows: 1855
+polygen:
+- - 40.33333
+  - 11.33343
+- - 57.4
+  - -5.06657
+- - 43.53333
+  - -21.1999
+roi_range:
+  xmax: 57.4
+  xmin: 40.33333
+  ymax: 11.33343
+  ymin: -21.1999
+roi_value: 7

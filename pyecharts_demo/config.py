@@ -9,4 +9,4 @@ ZIP_DIR='./app/static/zip'
 APP_HOST='localhost'
 APP_PORT='9000'
 
-TITLE="image matting"
+TITLE="ROI TOOL"

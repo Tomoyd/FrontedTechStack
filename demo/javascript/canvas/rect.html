@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<canvas id="drawing" width="200px" height="100px"></canvas>
+<script>
+    let context2D=document.getElementById("drawing").getContext("2d")
+    context2D.fillStyle='#FF0'
+    context2D.fillRect(100,50,30,30)
+    context2D.lineWidth=5
+    context2D.strokeStyle='#F00'
+    context2D.lineCap="round"
+    context2D.lineJoin="bevel"
+    context2D.strokeRect(100,50,30,30)
+
+
+</script>
+</body>
+</html>

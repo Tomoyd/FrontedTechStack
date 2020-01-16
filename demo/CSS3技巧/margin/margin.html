@@ -21,6 +21,27 @@
             width: 100px;
             margin-right: 20px;
         }
+        .box{
+            max-width:600px;
+            overflow: hidden;
+        }
+        .column-left,
+        .column-right {
+
+
+            margin-bottom: -9999px;
+            padding-bottom: 9999px;
+        }
+        .column-left {
+            float: left;
+            width:50%;
+            background-color: #34538b;
+        }
+        .column-right {
+            width:50%;
+            float: left;
+            background-color: #cd0000;
+        }
     </style>
 </head>
 <body>
@@ -30,5 +51,18 @@
     <li>4</li>
 </ul>
 <button style="display: inline-block;vertical-align: middle; margin:0;">123</button>
+<div class="box">
+<div id="colLeft" class="column-left">
+    <h4>正方观点</h4>
+    <p>观点1</p>
+    <p>观点1</p>
+    <p>观点1</p>
+    <p>观点1</p>
+</div>
+<div id="colRight" class="column-right">
+    <h4>反方观点</h4>
+    <p>观点1</p>
+</div>
+</div>
 </body>
 </html>

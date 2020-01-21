@@ -9,5 +9,15 @@
 <div style="width:100px;height: 40px;margin-left:auto;background: #3d3d3d;margin-right:10px">
 
 </div>
+<script>
+    function handleResponse(res){
+        console.log(999);
+        console.log(res);
+    }
+    let script=document.createElement("script");
+    script.type="text/json"
+    script.src="http://10.10.5.151:8999/workHour/getWorkHourReportColumn?callback=handleResponse";
+    document.body.insertBefore(script,document.body.firstChild);
+</script>
 </body>
 </html>

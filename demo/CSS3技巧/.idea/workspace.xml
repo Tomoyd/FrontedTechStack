@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ea4483ef-2eef-4804-abda-b2712ce6090b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/margin/test.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/margin/test01.html" beforeDir="false" afterPath="$PROJECT_DIR$/margin/test01.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../javascript/javascript知识/Ajax与Comet.md" beforeDir="false" afterPath="$PROJECT_DIR$/../javascript/javascript知识/Ajax与Comet.md" afterDir="false" />
-    </list>
+    <list default="true" id="ea4483ef-2eef-4804-abda-b2712ce6090b" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -157,8 +152,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="2232" />
-    <option name="y" value="484" />
+    <option name="x" value="2410" />
+    <option name="y" value="257" />
     <option name="width" value="1835" />
     <option name="height" value="823" />
   </component>
@@ -227,7 +222,7 @@
       <workItem from="1573029503072" duration="12246000" />
       <workItem from="1573174952336" duration="6154000" />
       <workItem from="1576746183004" duration="2817000" />
-      <workItem from="1579081602592" duration="14546000" />
+      <workItem from="1579081602592" duration="14912000" />
     </task>
     <task id="LOCAL-00001" summary="CSS3">
       <created>1573047020460</created>
@@ -247,10 +242,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="35763000" />
+    <option name="totallyTimeSpent" value="36129000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="2232" y="484" width="1835" height="823" extended-state="0" />
+    <frame x="2410" y="257" width="1835" height="823" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.09773606" />
